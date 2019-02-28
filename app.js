@@ -1,6 +1,7 @@
 var app = require('express')();
 var server = require('http').Server(app);
 var session = require('cookie-session');
+var ent = require('ent');
 
 var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false});
