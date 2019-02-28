@@ -1,4 +1,4 @@
-<! doctype html>
+<!doctype html>
 
 <html>
   <head>
@@ -10,10 +10,10 @@
       <h1>To-do list</h1>
 
       <ul>
-        <% todolist.forEach(function(lala, index) { %>
+        <% todolist.forEach(function(justdoit, index) { %>
         
           <li>
-            <%= lala %>
+            <%= justdoit %>
             <a id="cross" href="/todo/delete/<%= index %>">✘</a> 
           </li>
         
@@ -26,7 +26,6 @@
         <input type="submit" id="add" value="Add"/>
       </form>
     </div>
-
 
 <style>
 
@@ -99,5 +98,43 @@ input[type='submit'] {
 }
 </style>
 
-  </body>
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  //Connexion
+  var socket = io.connect('http://localhost:8080');
+  
+  //Pseudo
+  // var pseudo = prompt('Pseudo :');
+  // socket.emit('nouveau_client', pseudo);
+  // document.title = pseudo + '-' + document.title;
+  // console.log(pseudo);
+  
+  //Réception de signaux de type "message" 
+  socket.on('todo', function(data) {
+    insertTodo(data.pseudo, data.todo)
+  })
+
+  //Envoi du formulaire    
+  $('#form').submit(function() {
+    var todo = $('#newtodo').val();
+    socket.emit('todo', todo);
+    insertTodo(pseudo, todo);
+
+    $('#text').val('').focus();
+
+    return false;
+  });
+
+  function insertTodo(pseudo, todo) {
+    $('#liste').prepend('<p>' + pseudo + ' : ' + todo + '<p>');
+  }
+
+</script>
+
+
+
+
+</body>
 </html>

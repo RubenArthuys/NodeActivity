@@ -1,14 +1,12 @@
-var express = require('express');
+var app = require('express')();
+var server = require('http').Server(app);
 var session = require('cookie-session');
+
 var bodyParser = require('body-parser');
 var urlencodeParser = bodyParser.urlencoded({ extended: false});
-// var path = require ('path');
-
-var app = express();
+var io = require('socket.io')(server);
+  
 app.set('view engine', 'ejs');
-// CSS-Js-Static loading
-// app.use(express.static(path.join(__dirname, 'public')));
-// app.set('views', __dirname + '/views');
 
 app.use(session({secret: 'todosecret'}))
 
@@ -41,4 +39,19 @@ app.use(session({secret: 'todosecret'}))
   res.redirect('/todo');
 })
 
-.listen(8080);
+io.sockets.on('connection', function (socket, pseudo) {
+
+  socket.on('nouveau_client', function(pseudo) {
+    pseudo = ent.encode(pseudo);
+    socket.pseudo = pseudo;
+    socket.broadcast.emit('nouveau_client', pseudo);
+  });
+
+  socket.on('todo', function(todo) {
+    todo = ent.encode(todo);
+    socket.broadcast.emit('todo', {pseudo: socket.pseudo, todo: todo});
+    console.log(todo);
+  });
+});
+
+server.listen(8080);
