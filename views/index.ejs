@@ -1,0 +1,103 @@
+<! doctype html>
+
+<html>
+  <head>
+    <title>To Do List</title>
+  </head>
+  <body>
+
+    <div id="list_section">
+      <h1>To-do list</h1>
+
+      <ul>
+        <% todolist.forEach(function(lala, index) { %>
+        
+          <li>
+            <%= lala %>
+            <a id="cross" href="/todo/delete/<%= index %>">✘</a> 
+          </li>
+        
+        <% }); %>
+      </ul>
+      
+      <form id="form" action="/todo/add/" method="post">
+        <label>To do &rarr;</label>
+        <input type="text" id="newtodo" name ="newtodo" placeholder="What do you need to do" autofocus/>
+        <input type="submit" id="add" value="Add"/>
+      </form>
+    </div>
+
+
+<style>
+
+body {
+  background-color: #9dcbff;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+#list_section {
+  text-align: center;
+}
+
+#cross {
+  text-decoration: none;
+  color: rgb(204, 125, 125)
+}
+
+h1 {
+  color: white;
+  margin: 0px auto;
+  padding: 20px;}
+
+ul {
+  padding: 0;
+  user-select: none;
+}
+
+li {
+  background-color: #fff;
+  color: #000;
+  font-size: 20px;
+  list-style-type: none;
+  width: 20%;
+  margin: 0px auto;
+  border-radius: 3px;
+  border: 1px solid #000;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+p {
+  background-color: #fff;
+  color: rgb(118, 118, 118); 
+  padding: 10px;
+  display: inline-block;
+  margin: 20px auto 20px auto;
+  width: 80%;
+  border-radius: 5px;
+  text-align: center;}
+
+
+input[type='text'] {
+  font-size: 12px;
+  padding: 6px;
+  border: 1px solid #000;
+  border-radius: 3px;
+}
+
+input[type='submit'] {
+  background-color: #fff;
+  color: #000;
+  border-radius: 8px;
+  border: none;
+  padding: 5px;
+}
+
+#text {
+  margin-top: 60px; 
+  width: 30%;
+}
+</style>
+
+  </body>
+</html>
