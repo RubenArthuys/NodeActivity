@@ -23,7 +23,7 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
-  
+
   //Connexion
   var socket = io.connect('http://localhost:8080');
 
@@ -51,7 +51,7 @@
 
   //Add
   function insertTodo(todo, index) {
-    $('#todolist').append('<li>' + todo + '<a id="cross" class="delete" href="" data-index="' + index + '">✘</a></li>');
+    $('#todolist').append('<li>' + todo + '<a id="cross" class="delete" href="" data-index="' + index + '"> ✘</a></li>');
   }
 
   //Delete
