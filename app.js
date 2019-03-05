@@ -8,16 +8,20 @@ var io = require('socket.io')(server);
 var todoList = [];
 var index;
 
+//Use public CSS
 app.use(express.static('public'))
 
+//Load page
   .get('/todo', function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
   })
 
+  //Redirect
   .use(function(req, res, next){
     res.redirect('/todo');
   })
 
+//Socket.io
 io.sockets.on('connection', function (socket) {
 
   console.log('New user connected : )');
@@ -32,9 +36,11 @@ io.sockets.on('connection', function (socket) {
     
     index = todoList.length -1;
 
-    // socket.broadcast.emit('updateList', todoList);
     //Emit to all users
     socket.broadcast.emit('addTodo', {todo:todo, index:index});
+
+    //Simpler option:
+    // socket.broadcast.emit('updateList', todoList);
   });
 
   //Delete

@@ -23,10 +23,11 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <script>
+  
   //Connexion
   var socket = io.connect('http://localhost:8080');
 
-  //Load To-do list stockée dans []
+  //Load To-do list from []
   socket.on('updateList', function(todoList) {
     $('#todolist').empty();
     todoList.forEach(function(todo, index) {
@@ -34,15 +35,13 @@
     });
   });
 
-  //Envoi du formulaire    
+  //Send form   
   $('#form').submit(function() {
     
     var todo = $('#newtodo').val();
     socket.emit('addTodo', todo);
-    // insertTodo(todo, index);
 
     $('#text').val('').focus();
-    // return false;
   });
 
   //Send new Todo to server
@@ -52,7 +51,7 @@
 
   //Add
   function insertTodo(todo, index) {
-    $('#todolist').append('<li><a id="cross" class="delete" href="" data-index="' + index + '">✘</a>' + todo + '</li>');
+    $('#todolist').append('<li>' + todo + '<a id="cross" class="delete" href="" data-index="' + index + '">✘</a></li>');
   }
 
   //Delete
