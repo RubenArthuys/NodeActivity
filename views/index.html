@@ -1,0 +1,66 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>To Do List</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+
+    <div id="list_section">
+      <h1>Real time To-do list</h1>
+
+      <ul id="todolist"></ul>
+      
+      <form id="form" action="/" method="post">
+        <label>To do &rarr;</label>
+        <input type="text" id="newtodo" name ="newtodo" placeholder="What do you need to do" autofocus/>
+        <input type="submit" id="add" value="Add"/>
+      </form>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  //Connexion
+  var socket = io.connect('http://localhost:8080');
+
+  //Load To-do list stockée dans []
+  socket.on('updateList', function(todoList) {
+    $('#todolist').empty();
+    todoList.forEach(function(todo, index) {
+      insertTodo(todo, index);
+    });
+  });
+
+  //Envoi du formulaire    
+  $('#form').submit(function() {
+    
+    var todo = $('#newtodo').val();
+    socket.emit('addTodo', todo);
+    // insertTodo(todo, index);
+
+    $('#text').val('').focus();
+    // return false;
+  });
+
+  //Send new Todo to server
+  socket.on('addTodo', function(data) {
+    insertTodo(data.todo, data.index);
+  });
+
+  //Add
+  function insertTodo(todo, index) {
+    $('#todolist').append('<li><a id="cross" class="delete" href="" data-index="' + index + '">✘</a>' + todo + '</li>');
+  }
+
+  //Delete
+  $('body').on('click', '.delete', function() {
+    socket.emit('deleteTodo', $(this).data('index'));
+  });
+
+</script>
+
+</body>
+</html>

@@ -1,57 +1,47 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').Server(app);
-var session = require('cookie-session');
 var ent = require('ent');
 
-var bodyParser = require('body-parser');
-var urlencodeParser = bodyParser.urlencoded({ extended: false});
 var io = require('socket.io')(server);
-  
-app.set('view engine', 'ejs');
 
-app.use(session({secret: 'todosecret'}))
+var todoList = [];
+var index;
 
-.use(function(req, res, next) {
-  if (typeof(req.session.todolist) == 'undefined') {
-    req.session.todolist = [];
-  }
-  next();
-})
+app.use(express.static('public'))
 
-.get('/todo', function(req, res) {
-  res.render('index.ejs', {todolist: req.session.todolist});
-})
+  .get('/todo', function(req, res) {
+    res.sendFile(__dirname + '/views/index.html');
+  })
 
-.post('/todo/add/', urlencodeParser, function(req, res) {
-  if (req.body.newtodo != '') {
-    req.session.todolist.push(req.body.newtodo);
-  }
-  res.redirect('/todo');
-})
+  .use(function(req, res, next){
+    res.redirect('/todo');
+  })
 
-.get('/todo/delete/:id', function(req, res) {
-  if (req.params.id != '') {
-    req.session.todolist.splice(req.params.id, 1);
-  }
-  res.redirect('/todo');
-})
+io.sockets.on('connection', function (socket) {
 
-.use(function(req, res, next){
-  res.redirect('/todo');
-})
+  console.log('New user connected : )');
 
-io.sockets.on('connection', function (socket, pseudo) {
+  socket.emit('updateList', todoList);
 
-  socket.on('nouveau_client', function(pseudo) {
-    pseudo = ent.encode(pseudo);
-    socket.pseudo = pseudo;
-    socket.broadcast.emit('nouveau_client', pseudo);
+  //Add
+  socket.on('addTodo', function(todo) {
+
+    todo = ent.encode(todo);
+    todoList.push(todo);
+    
+    index = todoList.length -1;
+
+    // socket.broadcast.emit('updateList', todoList);
+    //Emit to all users
+    socket.broadcast.emit('addTodo', {todo:todo, index:index});
   });
 
-  socket.on('todo', function(todo) {
-    todo = ent.encode(todo);
-    socket.broadcast.emit('todo', {pseudo: socket.pseudo, todo: todo});
-    console.log(todo);
+  //Delete
+  socket.on('deleteTodo', function(index) {
+    todoList.splice(index, 1);
+
+    io.sockets.emit('updateList', todoList);
   });
 });
 
