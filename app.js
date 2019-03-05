@@ -24,7 +24,7 @@ app.use(express.static('public'))
 //Socket.io
 io.sockets.on('connection', function (socket) {
 
-  console.log('New user connected : )');
+  console.log('New task to do?');
 
   socket.emit('updateList', todoList);
 
